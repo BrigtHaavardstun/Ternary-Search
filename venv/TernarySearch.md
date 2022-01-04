@@ -7,7 +7,7 @@ Hi!
 My name is Brigt and I am at the time of writing completing my 3. semester of an Algorithms master. The topic of this blog post will be one of my favorite algorithms, namely Ternary Search. 
 
 
-In what follows we will discuss the what, why, when and how of Ternary Search. We will start off by describing what Ternary Search is. This will be an overview of what the algorithm aims to do. We will then look at why one uses this technique, and what it offers. Next, we look at when to use Ternary Search and some of the traits a problem solvable by Ternary Search usually has. We will then end this blog post by discussing an implementation of Ternary Search.
+In what follows we will discuss the **what**, **why**, **when** and **how** of Ternary Search. We will start off by describing what Ternary Search is. This will be an overview of what the algorithm aims to do. We will then look at why one would uses this technique, and what it offers. Next, we look at when to use Ternary Search and some of the traits a problem solvable by Ternary Search usually has. We will then end this blog post by discussing an implementation of Ternary Search.
 
 After the technical description of Ternary Search a problem list from Kattis will be given, and you are encouraged to try to solve these problems with your new knowledge of Ternary Search!
 
@@ -59,7 +59,7 @@ Note that we could look at A as a function f(x) = x, and the elements in the lis
 #### Ternary Search?
 
 We are now hopefully ready to look at Ternary Search.
-The main idea with Ternary Search is to find a minimum value in a convex graph – f'(x) > 0 for all x. (We could also find maximum in a concave graph by inverting the examples and explanations given here).
+The main idea with Ternary Search is to find a minimum value in a convex graph – f''(x) > 0 for all x. (We could also find maximum in a concave graph by inverting the examples and explanations given here).
 
 ![Alt text](./images/Concave.png "Example of convex function")
 
@@ -87,7 +87,7 @@ On the other hand, if $v+$<$v$<$v-$, we know that the global minimum is between 
 
 By iteratively picking a new $i$ inside the range containing the global minimum and applying the rules above, one would find the global minimum.
 
-To take a step back I would like to point out a rather fun connection between Ternary Search and Binary Search. Whereas Binary Search searches for a value X in a given number space f(x), Ternary Search searches for a global minimum, which in fact is the same as looking for 0 in f'(x). Some might therefore say Ternary Search is Binary Search on the derivative of the original search function.
+To take a step back I would like to point out a rather fun connection between Ternary Search and Binary Search. Whereas Binary Search searches for a value X in a given number space f(x), Ternary Search searches for a global minimum, which in fact is the same as looking for 0 in f'(x). You could therefore say Ternary Search is Binary Search on the derivative of the original search function.
 
 
 As promised we know give a formal definition on what is a "convex list" – e.g. we can use Ternary Search.
@@ -97,7 +97,22 @@ As promised we know give a formal definition on what is a "convex list" – e.g
 2. For all a,b – A <= a < b <= x, F[a] > F[b]
 3. For all a,b – x <= a < b <= B, F[a] < F[b]
 
-!!!! TODO: Add something about continous functions and Ternary Search!!!!
+#### Side note on continus functions
+In the above section we have made the asumtion that the number of possible solutions are finite, say all integers between 0 and 100. However this is not always the case. Sometimes you want to find a solution in a continus functiong – e.g. your search space is all real numbers between 0 and 100.
+
+When facing such a problem is often not possible (nor needed!) to find an exact solution. What we often insted want is to find a solution **y**, such that the global minimum **x** is within some tolerance interval, for instance ```y-t<x<y+t, t=10^7```.
+
+We solve these problems the same way we solve other Ternary search problems, however we allow our "look up"-value **m** to be a decimal. And since we can have much smaller intervals between possible solutions the while condintion has to change to ```while(A(l)+t < A(h)) ```– **t** being the tolerance, and **A** being a continus function.
+
+Beacuse of the same reason we also have to change our method of narrowing down our search space. What we do for continus functions is to pick two values m1 and m2, m1<m2, and we look at their values v1 and v2. If v1 > v2, we know that our function has a downwards slope between v1 and v2, and hence we can conclude that our global minimum is not between l and v1. 
+
+![Alt text](./images/ContinusFunction.png "Example of contuis function")
+
+The code implementation at the end will explain what to do in the other cases.
+
+
+For the rest of this post i will mainly talk about continus functions. I will not always give a tolerance for the continus functions as it only changes the precision of the answer and not how we get it. 
+
 ## Why use Ternary Search?
 The short answer is beacuse its fast, O(log n) compared to O(n) for bruteforce. But to give a bit of insight into how fast it is we can compare it to the bruteforce search. Given a list of size n, how long time would the bruteforce algorithm use compared to Ternary Search?
 
@@ -124,10 +139,42 @@ On of the things to be on the lookout for is if the data you are given has an un
 
 Anni and Bob are having a race. Anni is much faster than Bob – in fact, at any instance Anni is always running faster then Bob – so she is giving him a headstart of 10 seconds. Given two list containing the position of Anni and Bob at each timestamp, find the timestamp where Anni catches up to Bob. 
 
-In this example, the function describing the distance between Anni and Bob will be a convex function, as it will stricly decrease when Anni is behind, and srticly increase when Anni is ahead.
+In this example, the function describing the distance between Anni and Bob will be a convex function, as it will stricly decrease when Anni is behind, and stricly increase when Anni is ahead.
 
-Another example could be a I/O problem. You are to make some pizza and you want to figure out how many pepperonies your customers wants on their pizza. You know that each customer wants the same amount of pepperonies with in the same day – however between days its totally random. A customer will alywas tip more the closer you are on their desired number of pepperonies.
+By Ternary searching on the distance between Anni and Bob we would find the moment Anni catches up to Bob.
+
+Another example could be a I/O problem. You are to make some pizza and you want to figure out how many pepperonies your customers wants on their pizza. You know that all customer wants the same amount of pepperonies on the same day – however between days its totally random. A customer will alywas tip more the closer you are on their desired number of pepperonies.
 
 In this second example the amount of tip creats a convex function. Compared to the first example, the second follow a more genral structure. If you are looking for a "correct amount" etc, and you have an oracle – IO / a function / method etc – to say how well you score on each insance (better score for closer instance), Ternary Search can be used to solve the problem fast.
 
-Also note that 
+Our general method then becomes:
+1. Find a range A-B you know contains the global minimum.
+2. Find some points you want to evauluet, m-,m,m+.
+3. Evaluet your points using the orcal
+4. Close down your search space using the information you gained.
+
+## How to use Ternary Search?
+This takes us to our last chapter of this blog post. In this chapter you will be given an implementation of Ternary Search on a contunius function as well as on a finite list. 
+
+(**git hub link**)
+```{python}
+def TernarySearchContinusFunc(left,right, f, tolerance):
+    # As long as our tolerance is not forfilled, we continue to search.
+    while (right-left) > tolerance or abs(f(right)-f(left)) > tolerance:
+        # We divid our search span into three segments.
+        left_third=left + (right-left)/3
+        right_third=right -(right-left)/3
+
+        # if the left_third is lower then right_thrid, we know there can not be a decrease in value between 
+        if f(left_third)<f(right_third):
+            right=right_third
+        elif f(left_third)>f(right_third):
+            left = left_third
+        else:
+            left  = left_third
+            right = right_third
+
+    return (left+right)/2
+```
+
+Hopefully most of the code is intuitive after reading the above chapters but we will quickly recap some of the main points.
