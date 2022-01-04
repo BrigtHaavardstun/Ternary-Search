@@ -1,4 +1,4 @@
-from TernarySeachFinite import TernarySearchFinite
+from TernarySearchFinite import TernarySearchFinite
 
 def BruteForce(A):
     minVal = float("inf")
