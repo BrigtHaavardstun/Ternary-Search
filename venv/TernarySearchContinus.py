@@ -1,11 +1,17 @@
 def TernarySearchContinusFunc(left,right, f, tolerance):
-    # As long as our tolerance is not forfilled, we continue to search.
-    while (right-left) > tolerance or abs(f(right)-f(left)) > tolerance:
+   # As long as our tolerance is not forfilled, we continue to search.
+    while right-left > tolerance:
+    
         # We divid our search span into three segments.
         left_third=left + (right-left)/3
         right_third=right -(right-left)/3
 
-        # if the left_third is lower then right_thrid, we know there can not be a decrease in value between 
+        """ 
+        if the left_third point is lower then right_thirdpoint,
+        we know there can not be a decrease 
+        in value between right and right_third.
+        Using similar arguments we get new bounds on all three cases.
+        """
         if f(left_third)<f(right_third):
             right=right_third
         elif f(left_third)>f(right_third):
@@ -15,7 +21,6 @@ def TernarySearchContinusFunc(left,right, f, tolerance):
             right = right_third
 
     return (left+right)/2
-
 import math
 def convexFunc(val):
     return (val)**2 - 3*val + 70
@@ -49,7 +54,8 @@ def findStartLefAndRight(f):
         right *= 2
     return left,right
 
-left,right = findStartLefAndRight(convexFunc)
-tolerance = 10**(-7)
-ans = TernarySearchContinusFunc(left,right,convexFunc, tolerance)
-print(ans, convexFunc(ans))
+if __name__ == "__main__":
+    left,right = findStartLefAndRight(convexFunc)
+    tolerance = 10**(-7)
+    ans = TernarySearchContinusFunc(left,right,convexFunc, tolerance)
+    print(ans, convexFunc(ans))

@@ -1,4 +1,4 @@
-def TernarySearch(A):
+def TernarySearchFinite(A):
     # Span containg the global minimum
     h = len(A)  # exslusive upperbound
     l = 0       # inclusive lowerbound
