@@ -21,7 +21,7 @@ Binary Search is – as the name implies – a search algorithm. We want to chec
 Given the list A =[-10,-4,3,0,4,7,22], we can try to look for a number X. We could try to check all values of A and compare all to X, and if we find a match say that X is in A. This would take O(n) time. However, it is possible to use Binary Search instead! With Binary Search we try to exclude as many values as possible at all times and narrow down the space of possible values matching X. 
 
 Binary Search algorithm (log(N):
-```{python}
+```python
 def BinarySeach(A, X):
     n = len(A)# The size of the list
     
@@ -156,7 +156,7 @@ Our general method then becomes:
 ## How to use Ternary Search?
 This takes us to our last chapter of this blog post. In this chapter you will be given an implementation of Ternary Search on a continuous function. 
 
-```{python}
+```python
 def TernarySearchContinusFunc(left,right, f, tolerance):
 
     # As long as our tolerance is not fulfilled, we continue to search.
